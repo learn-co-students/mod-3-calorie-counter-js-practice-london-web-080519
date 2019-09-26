@@ -94,12 +94,16 @@ function createItem(itemData) {
 	let deleteButton = document.createElement("a");
 	deleteButton.className = "delete-button";
 	deleteButton.setAttribute("uk-icon", "icon: trash");
-	deleteButton.addEventListener("click", event => removeListItem(itemData));
+	deleteButton.addEventListener("click", event =>
+		removeListItem(itemData.id, listItem),
+	);
 
 	menuDiv.append(editButton, deleteButton);
 	listItem.append(gridDiv, menuDiv);
-	caloriesList.appendChild(listItem);
-	editButton.addEventListener("click", event => prepopulateEditForm(itemData));
+	caloriesList.prepend(listItem);
+	editButton.addEventListener("click", event =>
+		prepopulateEditForm(itemData.id, listItem),
+	);
 
 	updateProgressBar();
 }
@@ -113,9 +117,9 @@ function updateProgressBar() {
 	progressBar.setAttribute("value", value);
 }
 
-function removeListItem(item) {
-	API.destroy(BASE_URL, item.id)
-		.then(event.target.parentNode.parentNode.parentNode.remove())
+function removeListItem(id, item) {
+	API.destroy(BASE_URL, id)
+		.then(item.remove())
 		.then(updateProgressBar);
 }
 
@@ -123,8 +127,8 @@ function handleAddCalorieSubmission() {
 	event.preventDefault();
 	let values = {
 		api_v1_calorie_entry: {
-			calorie: event.target.querySelector("input").value,
-			note: event.target.querySelector("textarea").value,
+			calorie: addCalorieForm.querySelector("input").value,
+			note: addCalorieForm.querySelector("textarea").value,
 		},
 	};
 	API.post(BASE_URL, values)
@@ -137,14 +141,17 @@ function emptyAddCalorieForm() {
 	addCalorieForm.querySelector("textarea").value = "";
 }
 
-function prepopulateEditForm(item) {
-	let trigger = event;
-	modal.querySelector("input").value = item.calorie;
-	modal.querySelector("textarea").value = item.note;
-	editForm.addEventListener("submit", event => handleItemUpdate(trigger, item));
+function prepopulateEditForm(id, listItem) {
+	modal.querySelector("input").value = listItem.querySelector(
+		"strong",
+	).innerText;
+	modal.querySelector("textarea").value = listItem.querySelector(
+		"em",
+	).innerText;
+	editForm.addEventListener("submit", event => handleItemUpdate(listItem, id));
 }
 
-function handleItemUpdate(location, item) {
+function handleItemUpdate(listItem, id) {
 	event.preventDefault();
 	let values = {
 		api_v1_calorie_entry: {
@@ -152,17 +159,18 @@ function handleItemUpdate(location, item) {
 			note: event.target.querySelector("textarea").value,
 		},
 	};
-	API.patch(BASE_URL, item.id, values)
-		.then(response =>
-			updateItem(location.target.parentNode.parentNode.parentNode, response),
-		)
-		.then(modal.setAttribute("style", ""))
+	API.patch(BASE_URL, id, values)
+		.then(response => updateItem(listItem, response))
+		.then(answer => {
+			modal.setAttribute("style", "");
+			modal.className = "uk-modal";
+		})
 		.then(updateProgressBar);
 }
 
-function updateItem(location, item) {
-	location.querySelector("strong").innerText = item.calorie;
-	location.querySelector("em").innerText = item.note;
+function updateItem(listItem, data) {
+	listItem.querySelector("strong").innerText = data.calorie;
+	listItem.querySelector("em").innerText = data.note;
 }
 
 function handleBMRSubmission() {
