@@ -10,7 +10,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="main.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
-  <script src="main.js"></script>
+  <script src="main.js" defer></script>
 </head>
 
 <body>
@@ -42,9 +42,9 @@
       <div id="bmr-calculation-result" class="uk-padding">
         <h3 class="uk-text-center"
           uk-tooltip="title: Measured in kcal. BMR varies depending on the individual but this is a good starting point.">
-          <span id="lower-bmr-range">500</span><em class="uk-text-meta">kcal</em>
+          <span id="lower-bmr-range"></span><em class="uk-text-meta">kcal</em>
           —
-          <span id="higher-bmr-range">700</span><em class="uk-text-meta">kcal</em>
+          <span id="higher-bmr-range"></span><em class="uk-text-meta">kcal</em>
         </h3>
         <progress class="uk-progress" value="0" max="0"
           uk-tooltip="title: Keep bar below 100% to lose weight, above 100% to gain weight."></progress>
@@ -67,7 +67,7 @@
       </form>
 
       <ul id="calories-list" class="uk-list uk-list-striped">
-        <li class="calories-list-item">
+        <!-- <li class="calories-list-item">
           <div class="uk-grid">
             <div class="uk-width-1-6">
               <strong>400</strong>
@@ -114,7 +114,7 @@
             <a class="edit-button" uk-icon="icon: pencil" uk-toggle="target: #edit-form-container"></a>
             <a class="delete-button" uk-icon="icon: trash"></a>
           </div>
-        </li>
+        </li> -->
       </ul>
     </div>
   </main>
