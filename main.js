@@ -148,7 +148,9 @@ function prepopulateEditForm(id, listItem) {
 	modal.querySelector("textarea").value = listItem.querySelector(
 		"em",
 	).innerText;
-	editForm.addEventListener("submit", event => handleItemUpdate(listItem, id));
+	editForm.addEventListener("submit", event => handleItemUpdate(listItem, id), {
+		once: true,
+	});
 }
 
 function handleItemUpdate(listItem, id) {
@@ -164,6 +166,7 @@ function handleItemUpdate(listItem, id) {
 		.then(answer => {
 			modal.setAttribute("style", "");
 			modal.className = "uk-modal";
+			editForm.removeEventListener("submit", handleItemUpdate, true);
 		})
 		.then(updateProgressBar);
 }
